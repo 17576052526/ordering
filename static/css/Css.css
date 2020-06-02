@@ -1,0 +1,19 @@
+﻿/* css框架定位：只用于辅助前台个性化布局的数据展示，只写常用的样式，不是后台框架，提供边距、宽度、浮动，不提供具体的布局方式（BootStrap则是提供更加具体的布局方式） */
+html,body,form,div,ul,ol,li,dl,dt,dd,p,h1,h2,h3,h4,h5,h6,input{margin: 0px;padding: 0px;}
+*{-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;}  /* 高度和宽度包括border-width和padding的值 */
+html,body{height:100%;}
+body
+{
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #333;
+}
+ol,ul{list-style: none;}
+a{color:inherit;text-decoration: none;}
+a:hover{color:#007BC4;}
+img{border:0;}
+em,i{font-style:normal;}
+table{border-spacing: 0;border-collapse: collapse;}
+h1,h2,h3,h4,h5,h6{font-size:14px;font-weight:normal;}
+/***** 类样式，后面的类样式已删除，因为用不着 *****/
