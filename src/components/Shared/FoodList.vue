@@ -53,14 +53,13 @@ export default {
         for(var m of lis){
           this.position.push(height);
           height+=m.clientHeight;
-          //this.position.push(m.getBoundingClientRect().top);
         }
       });  
   },
   methods:{
     scrollHeight:function(pos){
       //判断当前显示的是哪一个
-      var top=pos.target.scrollTop;
+      var top=pos.target.scrollTop+1; //此处+1,因为设置的值与获取的值会有偏差
       for(var i=0;i<this.position.length;i++){
         if(i<this.position.length-1){
           if(top>this.position[i]&&top<this.position[i+1]){
@@ -91,7 +90,7 @@ ol{
   overflow: auto;
 }
 ol>li>p{color:#666;line-height:50px;}
-ul li {display:flex;margin-bottom: 15px;}
+ul li {display:flex;padding-bottom: 15px;}
   ul li img{
     width:100px;
     height:100px;
