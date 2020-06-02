@@ -42,18 +42,12 @@ export default {
     };
   },
   mounted:function(){ //html加载完执行
-    this.loading();  
-  },
-  methods:{ //加载数据
-    loading:function(){
-      this.list=GetData.GetOrdering();
+    this.list=GetData.GetOrdering();
       this.typeList=GetData.GetType();
       for(var m of this.list){
         this.$set(m,"Num","0");
       }
-    },
-    scrollHeight:function(pos){
-      if(this.position.length==0){
+      this.$nextTick(function(){  //数据更新后并不会立马渲染在dom上，所以要用$nextTick 方法
         var lis=this.$refs.item;
         var height=0;
         for(var m of lis){
@@ -61,7 +55,10 @@ export default {
           height+=m.clientHeight;
           //this.position.push(m.getBoundingClientRect().top);
         }
-      }
+      });  
+  },
+  methods:{
+    scrollHeight:function(pos){
       //判断当前显示的是哪一个
       var top=pos.target.scrollTop;
       for(var i=0;i<this.position.length;i++){
