@@ -19,6 +19,14 @@ export const GetData={
             {ID:"10",TypeID:4,Name:"凤梨四季香",Img:"https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2062707419,3900706498&fm=26&gp=0.jpg",Price:"7.00",Desc:""},
         ]
     },
+    GetBanner:function(){
+        return [
+            {Href:"javascript:void(0)",Img:"http://img4.imgtn.bdimg.com/it/u=3017567867,2020029051&fm=26&gp=0.jpg"},
+            {Href:"javascript:void(0)",Img:"https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1221209201,2172390439&fm=26&gp=0.jpg"},
+            {Href:"javascript:void(0)",Img:"https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=928790305,4192647361&fm=11&gp=0.jpg"},
+            {Href:"javascript:void(0)",Img:"https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1811677031,1728040318&fm=26&gp=0.jpg"},
+        ];
+    },
     //检查数据更新，根据本地数据版本，和服务器数据版本进行对比
     CheckUpdate:function(){
 
