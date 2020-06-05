@@ -1,113 +1,115 @@
-<template>  
-<ol v-on:scroll="scrollHeight" ref="box">
-  <li v-for="t in typeList" ref="item">
-    <p>{{t.Name}}</p>
-<ul>
-  <li v-for="m in list.filter(function(e){return e.TypeID==t.ID;})">
-    <img v-bind:src="m.Img" />
-    <div>
-      <h4>{{m.Name}}</h4>
-      <h6>{{m.Desc}}</h6>
-      <h5>
-        <span>￥<span>{{m.Price}}</span></span>
-        <i>
-          <b v-on:click="m.Num--" v-show="m.Num>0" class="jian">-</b>
-          <em v-show="m.Num>0">{{m.Num}}</em>
-          <b v-on:click="m.Num++">+</b>
-        </i>
-      </h5>
-    </div>    
-  </li>
-</ul>
-  </li>
-</ol>
-
+<template>
+<div>
+  <ul class="FoodList-box" v-on:scroll="scrollTop" ref="box">
+    <li v-for="t in typeList" ref="item">
+      <h1>{{t.Name}}</h1>
+      <ol class="list">
+        <li v-for="m in list.filter(function(e){return e.TypeID==t.ID;})">
+          <img v-bind:src="m.Img" />
+          <div>
+            <h3>{{m.Name}}</h3>
+            <h4>{{m.Desc}}</h4>
+            <h5>￥<span>{{m.Price}}</span></h5>
+            <h6>
+              <em class="jian" v-show="m.Num>0" v-on:click="m.Num--"><i class="glyphicon glyphicon-minus"></i></em>
+              <span v-show="m.Num>0">{{m.Num}}</span>
+              <em v-on:click="m.Num++"><i class="glyphicon glyphicon-plus"></i></em>
+            </h6>
+          </div>
+        </li>
+      </ol>
+    </li>
+  </ul>
+  <div class="submit-box" v-show="list.filter(s=>{return s.Num>0}).length>0">购物车 {{Sum}}元<span v-on:click="submit">选好了&gt;</span></div>
+</div>
 </template>
 
 <script>
-/*
-对外属性：setCur，用来设置显示哪个块
-对外事件：current，用来返回当前选中的块
-*/
-
-import {GetData} from './../../js/GetData.js'
+import { GetData } from "../../js/GetData";
 
 export default {
-  name:"typelist",
-  data:function(){  //定义格式，也可以直接在这ajax取数据
+  name:"FoodList",
+  data:function(){
     return {
-      list:null,
       typeList:null,
-      position:[]   //用来记录每一个标题所在的位置
+      list:[],  //给默认值，视图一开始加载就不会报错
+      position:[] //每一块的y轴位置
     };
   },
-  mounted:function(){ //html加载完执行
+  mounted:function(){
+    this.typeList=GetData.GetType();
     this.list=GetData.GetOrdering();
-      this.typeList=GetData.GetType();
-      for(var m of this.list){
-        this.$set(m,"Num","0");
-      }
-      this.$nextTick(function(){  //数据更新后并不会立马渲染在dom上，所以要用$nextTick 方法
-        var lis=this.$refs.item;
-        var height=0;
-        for(var m of lis){
-          this.position.push(height);
-          height+=m.clientHeight;
-        }
-      });  
-  },
-  methods:{
-    scrollHeight:function(pos){
+    //添加字段
+    for(var m of this.list){
+      this.$set(m,'Num',0);
+    }
+    //把每一块的y轴位置记录起来
+    this.$nextTick(function(){  //数据更新后并不会立马渲染在dom上，所以要用$nextTick 方法
+      var lis=this.$refs.item;
+      var height=0;
+      for(var m of lis){
+        this.position.push(height);
+         height+=m.clientHeight;
+       }
+    });  
+  },methods:{
+    scrollTop:function(pos){
       //判断当前显示的是哪一个
       var top=pos.target.scrollTop+1; //此处+1,因为设置的值与获取的值会有偏差
       for(var i=0;i<this.position.length;i++){
         if(i<this.position.length-1){
           if(top>this.position[i]&&top<this.position[i+1]){
-            this.$emit('current',i);
+            this.$emit('returnCur',i);  //执行回调函数（自定义事件）
           }
         }else{
           if(top>this.position[i]){
-            this.$emit('current',i);
+            this.$emit('returnCur',i);  //执行回调函数（自定义事件）
           }
         }
       }
+    },
+    submit:function(){
+      var objArr=[];
+      for(var m of this.list.filter(s=>{return s.Num>0})){
+        objArr.push({ID:m.ID,Num:m.Num});
+      }
+      GetData.Submit(objArr);
     }
-  },props:["setCur"], //提供一个对外属性
+  },
+  props:["curIndex"], //提供一个对外属性
   watch:{
-    setCur:function(){  //当对外属性发生更改后做相应处理
-      var top=this.position[this.setCur];
-      this.$refs.box.scrollTo(0,top);
+      curIndex:function(){  //当对外属性发生更改后做相应处理
+        var top=this.position[this.curIndex];
+        this.$refs.box.scrollTo(0,top);
+      }
+    },
+  computed:{
+    Sum:function(){
+      var count=0;
+      for(var m of this.list){
+        count+=m.Num*m.Price;
+      }
+      return count;
     }
   }
-}
+  }
 </script>
 
 <style scoped>
-ol{
-  height:100vh;
-  padding-bottom:60px;
-  padding-left: 20px;
-  overflow: auto;
-}
-ol>li>p{color:#666;line-height:50px;}
-ul li {display:flex;padding-bottom: 15px;}
-  ul li img{
-    width:100px;
-    height:100px;
-    display: block;
-  }
-  ul li div{
-    padding:10px 20px;
-    flex:1;
-    position:relative;
-  }
-  h6{color:#aaa;height:30px;}
-  h4{color:#666;font-weight: bold;}
-  h5{margin-top:10px;}
-  h5>span{color:red;font-size:12px;}
-  h5>span>span{font-size:14px;}
-  h5>i{position: absolute;bottom:10px;right:10px;display: flex;}
-  h5>i>b{font-weight: normal;font-size:16px; background-color:red;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;color:#fff;}
-  h5>i>b.jian{background-color:transparent;border:1px solid red;color:red;}
-h5>i>em{width:20px;text-align:center;}
+  .FoodList-box{height:100vh;padding:0px 10px 60px 10px;overflow: auto;}
+  .FoodList-box h1{line-height:50px;}
+  .list{border-bottom:1px solid transparent;}/*此处这样设置是为了，当子节点设置margin-bottom时，js的 m.clientHeight 取值正确*/
+  .list li {display: flex;margin-bottom: 15px;}
+  .list li img{width:80px;height:80px;display:block;}
+  .list li>div{flex: 1;position: relative;padding-top:10px;padding-left: 10px;}
+  .list li>div h3{color:#666;font-weight: bold;}
+  .list li>div h4{font-size: 12px;color:#aaa;height:20px;line-height: 20px;}
+  .list li>div h5{margin-top: 5px;color:#F75252;font-size: 12px;}
+  .list li>div h5 span{font-size: 14px;}
+  .list li>div h6{position: absolute;right:0px;bottom: 5px;display: flex;}
+  .list li>div h6 em{font-size:12px;background-color:red;color:#fff;border-radius: 50%;width:20px;height: 20px;line-height:20px;text-align: center;}
+  .list li>div h6 .jian{border:1px solid red;color:red;background-color: #fff;}
+  .list li>div h6 span{width:20px;text-align: center;}
+  .submit-box{position: fixed;bottom:50px;left:0px;width:100%;background-color:#FF9B00;color:#333;padding:10px 40px;border-top-left-radius:10px;border-top-right-radius:10px;display: flex;}
+  .submit-box span{flex:1;text-align: right;}
 </style>

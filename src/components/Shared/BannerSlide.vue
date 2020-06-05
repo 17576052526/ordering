@@ -4,7 +4,7 @@
             <a v-for="(m,index) in bannreList" v-bind:href="m.Href"><img v-bind:src="m.Img"/></a>
         </div>
         <div class="btn-box">
-            <span v-for="i in bannreListLength" v-bind:class="{'_current':cur==i-1}"></span>
+            <span v-for="i in bannreList.length" v-bind:class="{'_current':cur==i-1}"></span>
         </div>
     </div>
 </template>
@@ -15,8 +15,7 @@ export default {
     name:"BannerSlide",
     data:function(){
         return {
-            bannreList:null,//banner图数据列表
-            bannreListLength:0,//bannreList的长度，因为v-for中用 bannreList.length报错
+            bannreList:[],//banner图数据列表，此处要给初始值，不然bannreList.length会报错
             cur:0,  //当前显示哪一个
             isTouch:null,   //当前是否是手指按下
             touchstartX:0,  //手指按下时的x坐标
@@ -27,7 +26,6 @@ export default {
     mounted:function(){
         //取banner数据
         this.bannreList=GetData.GetBanner();
-        this.bannreListLength=this.bannreList.length;
         this.isTouch=false;//此处这里赋值，是为了触犯监听来创建计时器
     },
     methods:{

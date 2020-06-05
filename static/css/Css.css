@@ -38,3 +38,5 @@ h1,h2,h3,h4,h5,h6{font-size:14px;font-weight:normal;}
   .glyphicon-home:before {content: "\e021";}
   .glyphicon-edit:before {content: "\e065";}
   .glyphicon-tree-deciduous:before {content: "\e200";}
+  .glyphicon-plus:before {content: "\2b";position: relative;left:1px;}
+  .glyphicon-minus:before {content: "\2212";}

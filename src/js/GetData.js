@@ -51,6 +51,9 @@ export const GetData={
             {Href:"javascript:void(0)",Img:"https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1811677031,1728040318&fm=26&gp=0.jpg"},
         ];
     },
+    Submit:function(data){
+        
+    },
     //检查数据更新，根据本地数据版本，和服务器数据版本进行对比
     CheckUpdate:function(){
 

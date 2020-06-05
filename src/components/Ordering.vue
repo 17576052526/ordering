@@ -1,35 +1,54 @@
 <template>
-  <div>
-    <TypeList v-on:current="TypeListReturn" v-bind:setCur="leftCur"/>
-    <FoodList v-on:current="FoodListReturn" v-bind:setCur="rightCur"/>
+  <div class="box">
+    <ul class="left">
+      <li v-for="(m,i) in typeList" v-bind:class="{'_active':curIndex==i}" v-on:click="curIndex=i;foodListCur=i">{{m.Name}}<span v-show="SumByID(m.ID)>0">{{SumByID(m.ID)}}</span></li>
+    </ul>
+    <FoodList v-on:returnCur="FoodListReturn" v-bind:curIndex="foodListCur" ref="food" />
   </div>
 </template>
+
 <script>
-import TypeList from './Shared/TypeList'
 import FoodList from './Shared/FoodList'
+import { GetData } from "../js/GetData";
+
 export default {
-  name:"Ordering",
-  data:function(){
-    return {
-      leftCur:null,
-      rightCur:null
-    };
-  },
-  components:{TypeList,FoodList},
-  methods:{
-    TypeListReturn:function(data){  //接收子组件返回过来的数据
-      this.rightCur=data;
+    name:"Ordering",
+    data:function(){
+      return{
+        typeList:null,
+        curIndex:0,
+        foodListCur:0
+      };
     },
-    FoodListReturn:function(data){    //接收子组件返回过来的数据
-      this.leftCur=data;
+    mounted:function(){
+      this.typeList=GetData.GetType();
+    },
+    components:{FoodList},
+    methods:{
+      //回调函数，右边滑动到某一个块时返回标识
+      FoodListReturn:function(data){
+        this.curIndex=data;
+      },
+      //计算每一个类型已点多少菜品
+      SumByID:function(id){
+        var count=0;
+        this.$refs.food.list.filter(s=>{return s.TypeID==id;}).forEach(function(m){
+          count+=m.Num;
+        })
+        return count;
+      }
     }
-    
-  }
 }
 </script>
 
+
 <style scoped>
-  div{display:flex;}
-  div>*:nth-child(1){flex:3;}
-  div>*:nth-child(2){flex:7;}
+  .box{display: flex;}
+  .box>*:first-child{flex: 3;}
+  .box>*:nth-child(2){flex: 7;}
+
+  .left{background-color: #fafafa;height: 100vh;padding-bottom: 60px;overflow: auto;}
+  .left li{line-height: 40px;text-align: center;position: relative;}
+  ._active{background-color: #fff;}
+  .left li span{width:20px;height:20px;line-height:20px;text-align:center;position:absolute;top:0px;right:0px;border-radius:50%;background-color:red;color:#fff;}
 </style>
