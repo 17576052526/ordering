@@ -110,6 +110,6 @@ export default {
   .list li>div h6 em{font-size:12px;background-color:red;color:#fff;border-radius: 50%;width:20px;height: 20px;line-height:20px;text-align: center;}
   .list li>div h6 .jian{border:1px solid red;color:red;background-color: #fff;}
   .list li>div h6 span{width:20px;text-align: center;}
-  .submit-box{position: fixed;bottom:50px;left:0px;width:100%;background-color:#FF9B00;color:#333;padding:10px 40px;border-top-left-radius:10px;border-top-right-radius:10px;display: flex;}
+  .submit-box{position: fixed;bottom:50px;left:0px;width:100%;background-color:#FC5050;color:#fff;font-weight: bold;padding:10px 40px;border-top-left-radius:10px;border-top-right-radius:10px;display: flex;}
   .submit-box span{flex:1;text-align: right;}
 </style>
