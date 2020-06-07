@@ -20,12 +20,12 @@
       </ol>
     </li>
   </ul>
-  <div class="submit-box" v-show="list.filter(s=>{return s.Num>0}).length>0">购物车 {{Sum}}元<span v-on:click="submit">选好了&gt;</span></div>
+  <div class="submit-box" v-show="list.filter(s=>{return s.Num>0}).length>0">您当前坐在<b>{{this.$route.query.address}}</b>号桌，共计 <b>{{Sum}}</b>元<span v-on:click="submit">选好了&gt;</span></div>
 </div>
 </template>
 
 <script>
-import { GetData } from "../../js/GetData";
+import axios from "axios"
 
 export default {
   name:"FoodList",
@@ -37,21 +37,39 @@ export default {
     };
   },
   mounted:function(){
-    this.typeList=GetData.GetType();
-    this.list=GetData.GetOrdering();
-    //添加字段
-    for(var m of this.list){
-      this.$set(m,'Num',0);
-    }
-    //把每一块的y轴位置记录起来
-    this.$nextTick(function(){  //数据更新后并不会立马渲染在dom上，所以要用$nextTick 方法
-      var lis=this.$refs.item;
-      var height=0;
-      for(var m of lis){
-        this.position.push(height);
-         height+=m.clientHeight;
-       }
-    });  
+    axios.get(this.apiUrl+'/api/Types').then(response => {
+      this.typeList = response.data;
+      //typeList和List都加载完在计算y轴位置
+      this.$nextTick(function(){  //数据更新后并不会立马渲染在dom上，所以要用$nextTick 方法
+        this.position.splice(0,this.position.length);
+        var lis=this.$refs.item;
+        var height=0;
+        for(var m of lis){
+          this.position.push(height);
+          height+=m.clientHeight;
+        }
+      });
+    }).catch(function (error) {alert('请求失败');});
+    axios.get(this.apiUrl+'/api/Ordering').then(response => {
+      this.list = response.data;
+      //typeList和List都加载完在计算y轴位置
+      this.$nextTick(function(){  //数据更新后并不会立马渲染在dom上，所以要用$nextTick 方法
+        this.position.splice(0,this.position.length);
+        var lis=this.$refs.item;
+        var height=0;
+        if(lis!=null&&lis.length>0){
+          for(var m of lis){
+            this.position.push(height);
+            height+=m.clientHeight;
+          }
+        }
+      });
+      //添加字段
+      for(var m of this.list){
+        this.$set(m,'Num',0);
+      }
+    }).catch(function (error) {alert('请求失败');});
+    
   },methods:{
     scrollTop:function(pos){
       //判断当前显示的是哪一个
@@ -73,7 +91,8 @@ export default {
       for(var m of this.list.filter(s=>{return s.Num>0})){
         objArr.push({ID:m.ID,Num:m.Num});
       }
-      GetData.Submit(objArr);
+      alert('提交成功');
+      //GetData.Submit(objArr);
     }
   },
   props:["curIndex"], //提供一个对外属性
@@ -96,7 +115,7 @@ export default {
 </script>
 
 <style scoped>
-  .FoodList-box{height:100vh;padding:0px 10px 60px 10px;overflow: auto;}
+  .FoodList-box{height:100vh;padding:0px 10px 80px 10px;overflow: auto;}
   .FoodList-box h1{line-height:50px;}
   .list{border-bottom:1px solid transparent;}/*此处这样设置是为了，当子节点设置margin-bottom时，js的 m.clientHeight 取值正确*/
   .list li {display: flex;margin-bottom: 15px;}
@@ -110,6 +129,6 @@ export default {
   .list li>div h6 em{font-size:12px;background-color:red;color:#fff;border-radius: 50%;width:20px;height: 20px;line-height:20px;text-align: center;}
   .list li>div h6 .jian{border:1px solid red;color:red;background-color: #fff;}
   .list li>div h6 span{width:20px;text-align: center;}
-  .submit-box{position: fixed;bottom:50px;left:0px;width:100%;background-color:#FC5050;color:#fff;font-weight: bold;padding:10px 40px;border-top-left-radius:10px;border-top-right-radius:10px;display: flex;}
+  .submit-box{position: fixed;bottom:50px;left:0px;width:100%;background-color:#FC5050;color:#fff;font-weight: bold;padding:10px 20px;border-top-left-radius:10px;border-top-right-radius:10px;display: flex;}
   .submit-box span{flex:1;text-align: right;}
 </style>

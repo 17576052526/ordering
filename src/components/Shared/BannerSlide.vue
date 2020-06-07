@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import {GetData} from "../../js/GetData.js";
+import axios from "axios"
 export default {
     name:"BannerSlide",
     data:function(){
@@ -25,7 +25,7 @@ export default {
     },
     mounted:function(){
         //取banner数据
-        this.bannreList=GetData.GetBanner();
+        axios.get(this.apiUrl+'/api/sundry').then(response => {this.bannreList = response.data;}).catch(function (error) {alert('请求失败');});
         this.isTouch=false;//此处这里赋值，是为了触犯监听来创建计时器
     },
     methods:{

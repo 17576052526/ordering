@@ -9,7 +9,7 @@
 
 <script>
 import FoodList from './Shared/FoodList'
-import { GetData } from "../js/GetData";
+import axios from "axios"
 
 export default {
     name:"Ordering",
@@ -21,7 +21,7 @@ export default {
       };
     },
     mounted:function(){
-      this.typeList=GetData.GetType();
+      axios.get(this.apiUrl+'/api/Types').then(response => {this.typeList = response.data;}).catch(function (error) {alert('请求失败');});
     },
     components:{FoodList},
     methods:{

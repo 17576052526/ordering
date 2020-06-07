@@ -25,7 +25,7 @@ export default {
     },
     props:["id"],
     mounted:function(){
-        this.list=this.id==1?GetData.GetOrderProgress():GetData.GetOrder();
+        //this.list=this.id==1?GetData.GetOrderProgress():GetData.GetOrder();
     }
 }
 </script>
